@@ -1,0 +1,5 @@
+# Downloaded the data description as Web Page Complete, ignoring it.
+/data/description
+
+# ipynb
+.ipynb_checkpoints
