@@ -40,7 +40,9 @@ def predict():
 
     # Convert predictions back to a standard python type for serialization.
     pred = pipeline.predict([model_input])[0].item()
-    return jsonify(prediction=pred)
+    pred_proba = pipeline.predict_proba([model_input])[0]
+    print(max(pred_proba))
+    return jsonify(prediction=pred, accuracy=max(pred_proba))
 
 if __name__ == '__main__':
     app.run()

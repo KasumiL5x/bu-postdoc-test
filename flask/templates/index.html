@@ -113,7 +113,7 @@
 				dataType: 'json',
 				success: function(data) {
 					console.log(data);
-					$('#alert_success').html('<b>Death Prediction:</b> ' + data.prediction).show();
+					$('#alert_success').html('<b>Death Prediction:</b> ' + data.prediction + ' (' + (data.accuracy * 100.0).toFixed(2) + '% confident).').show();
 				},
 				error: function(xhr, msg, err) {
 					console.log(xhr);
