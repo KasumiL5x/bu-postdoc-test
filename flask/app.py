@@ -32,8 +32,8 @@ def predict():
 
     # Pull the values from the request.
     age = int(request.json['age'])
-    ejection_fraction = np.log10(float(request.json['ejection_fraction']))
-    serum_creatinine = np.log10(float(request.json['serum_creatinine']))
+    ejection_fraction = np.log(float(request.json['ejection_fraction']))
+    serum_creatinine = np.log(float(request.json['serum_creatinine']))
    
     # Build model input based on parsed JSON fields.
     model_input = [age, ejection_fraction, serum_creatinine]
