@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, render_template
+import numpy as np
 import joblib
 
 # Main app instance.
@@ -20,7 +21,7 @@ def predict():
         return jsonify(message='Failed to predict as input was not JSON.'), 400
     
     # Validate all required JSON tags are present.
-    fields = ['age', 'ejection_fraction', 'serum_creatinine', 'serum_sodium', 'time']
+    fields = ['age', 'ejection_fraction', 'serum_creatinine']
     if not all(x in request.json for x in fields):
         return jsonify(message='Failed to predict as input JSON was invalid.'), 400
     
@@ -31,13 +32,11 @@ def predict():
 
     # Pull the values from the request.
     age = int(request.json['age'])
-    ejection_fraction = int(request.json['ejection_fraction'])
-    serum_creatinine = float(request.json['serum_creatinine'])
-    serum_sodium = int(request.json['serum_sodium'])
-    time = int(request.json['time'])
+    ejection_fraction = np.log10(float(request.json['ejection_fraction']))
+    serum_creatinine = np.log10(float(request.json['serum_creatinine']))
    
     # Build model input based on parsed JSON fields.
-    model_input = [age, ejection_fraction, serum_creatinine, serum_sodium, time]
+    model_input = [age, ejection_fraction, serum_creatinine]
 
     # Convert predictions back to a standard python type for serialization.
     pred = pipeline.predict([model_input])[0].item()

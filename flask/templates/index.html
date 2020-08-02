@@ -88,22 +88,6 @@
 		  <input id="form_creatinine" type="number" min="0" step="0.01" class="form-control" placeholder="1.2">
 		</div>
 
-		<!-- Serum Sodium -->
-		<div class="input-group mb-3">
-		  <div class="input-group-prepend">
-		    <span class="input-group-text">Serum Sodium</span>
-		  </div>
-		  <input id="form_sodium" type="number" min="0" class="form-control" placeholder="142">
-		</div>
-
-		<!-- Time -->
-		<div class="input-group mb-3">
-		  <div class="input-group-prepend">
-		    <span class="input-group-text">Time</span>
-		  </div>
-		  <input id="form_time" type="number" min="0" class="form-control" placeholder="66">
-		</div>
-
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Predict</button>
 		<p class="mt-5 mb-3 text-muted">&copy; 2020 &mdash; Daniel Green</p>
 	</form>
@@ -117,8 +101,6 @@
 				age: $('#form_age').val(),
 				ejection_fraction: $('#form_ejection').val(),
 				serum_creatinine: $('#form_creatinine').val(),
-				serum_sodium: $('#form_sodium').val(),
-				time: $('#form_time').val()
 			};
 			console.log(data);
 
