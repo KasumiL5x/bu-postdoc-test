@@ -1,4 +1,5 @@
 <!-- Inspired by https://codepen.io/boudra/pen/YXzLBN -->
+<!-- Colors from: https://material-ui.com/customization/palette/ -->
 
 <!DOCTYPE html>
 <html>
@@ -19,13 +20,65 @@
 		  background-color: #f5f5f5;
 		}
 
+		.results {
+	    width: 100%;
+	    height: 60px;
+	    background-color: rgba(0, 0, 0, 0.38);
+	    position: absolute;
+	    bottom: 0;
+	    left: 0;
+	    border: 0 solid rgba(0, 0, 0, 0.1);
+	    border-radius: 0 0 2px 2px;
+	    border-bottom-width: 7px;
+	    margin: 0;
+	    padding: 0;
+
+	    color: #fff;
+	    font-weight: 400;
+
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+		}
+		.results-waiting {
+			background-color: rgba(0, 0, 0, 0.38);
+		}
+		.results-progress {
+			background-color: #64b5f6;
+		}
+		.results-negative {
+			background-color: #e57373;
+		}
+		.results-positive {
+			background-color: #81c784;
+		}
+		.results-spinner {
+	    display: block;
+	    width: 40px;
+	    height: 40px;
+	    position: absolute;
+	    border: 4px solid #fff;
+	    border-top-color: rgba(255, 255, 255, 0.3);
+	    border-radius: 100%;
+	    left: 50%;
+	    top: 48%;
+	    margin-left: -20px;
+	    margin-top: -20px;
+	    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+	    animation: spinner 0.6s infinite linear;
+	    opacity: 0;
+	    transition: opacity 0.3s ease;
+		}
+		.results-progress .results-spinner {
+			opacity: 1;
+		}
+
 		.overlay {
 	    width: 100%;
 	    height: 100%;
 	    padding: 10px 10px;
-	    background: #b8daff; /* Bootstrap's alert-primary */
+	    background: #64b5f6; /* Bootstrap's alert-primary */
 	    color: #fff;
-	    display: block;
 	    border: none;
 	    margin-top: 20px;
 	    position: absolute;
@@ -41,6 +94,8 @@
 	    display: flex;
 	    align-items: center;
 	    justify-content: center;
+
+	    transition: all 0.1s ease-out;
 		}
 		.overlay.loading {
 			max-height: 100%;
@@ -51,18 +106,22 @@
 			top: 40%;
 		}
 		.overlay.loading.ok {
-			background-color: #c3e6cb;
+			background-color: #81c784;
 		}
 		.overlay.loading.bad {
-			background-color: #f5c6cb;
+			background-color: #e57373;
 		}
 		.overlay.loading.ok .spinner {
+			/*opacity: 0;*/
 			border-radius: 0;
 			border-top-color: transparent;
 			border-right-color: transparent;
 			height: 20px;
 			animation: none;
 			transform: rotateZ(-45deg);
+		}
+		.overlay.loading.bad .spinner {
+			opacity: 0;
 		}
 
 		.overlay-content {
@@ -108,7 +167,7 @@
 					</div>
 
 					<div class="card-body">
-						<form id="pred_form">
+						<form id="pred_form" style="margin-bottom: 3.5rem;">
 							<!-- Age -->
 							<div class="input-group mb-3">
 							  <div class="input-group-prepend">
@@ -134,15 +193,24 @@
 							</div>
 
 							<button class="btn btn-lg btn-primary btn-block" type="submit">Predict</button>
-							<p class="mt-5 mb-3 text-muted text-center">&copy; 2020 &mdash; Daniel Green</p>
+							<!-- <p class="mt-3 mb-5 text-muted text-center">&copy; 2020 &mdash; Daniel Green</p> -->
 						</form>
 
-						<div id="overlay" class="overlay">
+						<div class="results results-waiting">
+							<i class="results-spinner"></i>
+							<span id="results-state">Waiting for prediction...</span>
+						</div>
+						<!-- 
+						- Have states for waiting (disabled), predicting (animated circle only, no text), ok (green, text), and bad (red, text).
+						- Get the states working and then hook up the JS after (fake first, proper after).
+						 -->
+
+<!-- 						<div id="overlay" class="overlay">
 							<i class="spinner"></i>
 							<div class="overlay-content">
 								<span id="state">Login</span>
 							</div>
-						</div>
+						</div> -->
 
 					</div>
 				</div>
