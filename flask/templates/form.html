@@ -1,0 +1,186 @@
+<!-- Inspired by https://codepen.io/boudra/pen/YXzLBN -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heart Failure Predictor</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+		body {
+		  display: -ms-flexbox;
+		  display: flex;
+		  -ms-flex-align: center;
+		  align-items: center;
+		  background-color: #f5f5f5;
+		}
+
+		.overlay {
+	    width: 100%;
+	    height: 100%;
+	    padding: 10px 10px;
+	    background: #b8daff; /* Bootstrap's alert-primary */
+	    color: #fff;
+	    display: block;
+	    border: none;
+	    margin-top: 20px;
+	    position: absolute;
+	    left: 0;
+	    bottom: 0;
+	    max-height: 60px;
+	    border: 0 solid rgba(0,0,0,0.1);
+	    border-radius: 0 0 2px 2px;
+	    transform: rotatez(0deg);
+	    transition: all 0.1s ease-out;
+	    border-bottom-width: 7px;
+
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+		}
+		.overlay.loading {
+			max-height: 100%;
+			padding-top: 50px;
+		}
+		.overlay.loading .spinner {
+			opacity: 1;
+			top: 40%;
+		}
+		.overlay.loading.ok {
+			background-color: #c3e6cb;
+		}
+		.overlay.loading.bad {
+			background-color: #f5c6cb;
+		}
+		.overlay.loading.ok .spinner {
+			border-radius: 0;
+			border-top-color: transparent;
+			border-right-color: transparent;
+			height: 20px;
+			animation: none;
+			transform: rotateZ(-45deg);
+		}
+
+		.overlay-content {
+			/*max-width: 50%;*/
+		}
+
+		@keyframes spinner {
+			0% { transform: rotateZ(0deg); }
+			100% { transform: rotateZ(359deg); }
+		}
+		.spinner {
+	    display: block;
+	    width: 40px;
+	    height: 40px;
+	    position: absolute;
+	    border: 4px solid #fff;
+	    border-top-color: rgba(255,255,255,0.3);
+	    border-radius: 100%;
+	    left: 50%;
+	    top: 0;
+	    opacity: 0;
+	    margin-left: -20px;
+	    margin-top: -20px;
+	    animation: spinner 0.6s infinite linear;
+	    transition: top 0.3s 0.3s ease, opacity 0.3s 0.3s ease, border-radius 0.3s ease;
+	    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="row justify-content-center align-self-center">
+			<div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3 h-100">
+
+				<div class="row justify-content-center">
+					<img class="mb-4" src="../static/img/tlou.svg" alt="" width="128">
+				</div>
+
+				<div class="card">
+					<div class="card-header">
+						<div class="text-center">Heart Failure Predictor</div>
+					</div>
+
+					<div class="card-body">
+						<form id="pred_form">
+							<!-- Age -->
+							<div class="input-group mb-3">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Age</span>
+							  </div>
+							  <input id="form_age" type="number" min="0" class="form-control" placeholder="70">
+							</div>
+
+							<!-- Ejection Fraction -->
+							<div class="input-group mb-3">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Ejection Fraction</span>
+							  </div>
+							  <input id="form_ejection" type="number" min="0" class="form-control" placeholder="60">
+							</div>
+
+							<!-- Serum Creatinine -->
+							<div class="input-group mb-3">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Serum Creatinine</span>
+							  </div>
+							  <input id="form_creatinine" type="number" min="0" step="0.01" class="form-control" placeholder="1.2">
+							</div>
+
+							<button class="btn btn-lg btn-primary btn-block" type="submit">Predict</button>
+							<p class="mt-5 mb-3 text-muted text-center">&copy; 2020 &mdash; Daniel Green</p>
+						</form>
+
+						<div id="overlay" class="overlay">
+							<i class="spinner"></i>
+							<div class="overlay-content">
+								<span id="state">Login</span>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+	<script>
+		$('#pred_form').submit(function(evt) {
+
+			$('#overlay').addClass('loading');
+			$('#state').html('Predicting...');
+
+			const data = {
+				age: $('#form_age').val(),
+				ejection_fraction: $('#form_ejection').val(),
+				serum_creatinine: $('#form_creatinine').val(),
+			};
+			console.log(data);
+
+			// Normally this would be hooked up to AJAX responses.
+			setTimeout(function() {
+				$('#overlay').addClass('ok');
+				$('#state').html('Survival is likely (65.7%)!');
+			}, 1000);
+
+			setTimeout(function() {
+				$('#overlay').addClass('bad');
+				$('#state').html('Death is likely (65.7%).');
+			}, 3000);
+
+			evt.preventDefault();
+		});
+	</script>
+
+</body>
+</html>
