@@ -47,3 +47,6 @@ If the server encounters any error, it will return JSON with the error message. 
 }
 ```
 The frontend uses this API when predicting, just as could any third-party application.  Security was not considered here, but JWT or other authentication could be easily added.
+### Frontend Demo
+If you cannot run, do not fret.  Here is a GIF of the frontend in action.<br/>When hosted online, status stages are clearer, but localhost is lightning fast.
+![](https://github.com/KasumiL5x/bu-postdoc-test/raw/master/screenshots/demo.gif)
